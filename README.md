@@ -14,6 +14,12 @@ PHPIDS enables you to see who’s attacking your site and how and all without th
 logfiles or searching hacker forums for your domain. Last but not least it’s licensed under the fair LGPL!
 
 
+## Installation
+
+```bash
+composer require emscherland/phpids
+```
+
 ## Contributions
 
 If you would like to contribute, please open a pull request. If you need something to do, have a look at our
@@ -22,9 +28,13 @@ If you would like to contribute, please open a pull request. If you need somethi
 
 ## Credits
 
+This Package is forked from the original PHPIDS that is no longer maintained and that is lacking support for modern PHP.
+
+The Credits originally contained the following:
+
 The project was started by Christian Matthies <ch0012@gmail.com> and Mario Heiderich <mario.heiderich@gmail.com>.
-Mario spend a lot of time maintaining PHPIDS mostly on his own. Huge props for that. Lars Strojny <lars@strojny.net>
-merged pull requests of the original package.
+Mario spend a lot of time maintaining PHPIDS mostly on his own. Huge props for that. Currently Lars Strojny <lars@strojny.net>
+merges pull requests.
 
 ### An incomplete list of contributors:
 
