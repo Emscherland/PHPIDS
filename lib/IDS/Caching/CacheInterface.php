@@ -52,14 +52,13 @@ interface CacheInterface
      *
      * @param array $data the cache data
      *
-     * @return void
+     * @return CacheInterface
      */
-    public function setCache(array $data);
+    public function setCache(array $data): CacheInterface;
 
     /**
      * Interface method
      *
-     * @return void
      */
     public function getCache();
 }

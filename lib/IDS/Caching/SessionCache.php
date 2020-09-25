@@ -109,7 +109,7 @@ class SessionCache implements CacheInterface
      *
      * @return object $this
      */
-    public function setCache(array $data)
+    public function setCache(array $data): CacheInterface
     {
 
         $_SESSION['PHPIDS'][$this->type] = $data;

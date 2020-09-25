@@ -148,7 +148,7 @@ class DatabaseCache implements CacheInterface
      * @return object       $this
      * @throws PDOException if a db error occurred
      */
-    public function setCache(array $data)
+    public function setCache(array $data): CacheInterface
     {
         $handle = $this->handle;
 

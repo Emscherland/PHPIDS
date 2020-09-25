@@ -58,9 +58,9 @@ class CacheFactory
      *
      * @return object the caching facility
      */
-    public static function factory($init, $type)
+    public static function factory($init, $type): ?CacheInterface
     {
-        $object = false;
+        $object = null;
         $wrapper = preg_replace(
             '/\W+/m',
             null,

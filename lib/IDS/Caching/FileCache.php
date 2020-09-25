@@ -129,13 +129,11 @@ class FileCache implements CacheInterface
      * @return object    $this
      * @throws Exception if cache file couldn't be created
      */
-    public function setCache(array $data)
+    public function setCache(array $data): CacheInterface
     {
-        if (!is_writable(preg_replace('/[\/][^\/]+\.[^\/]++$/', null, $this->path))) {
+        if (!is_writable(dirname($this->path))) {
             throw new Exception(
-                'Temp directory ' .
-                htmlspecialchars($this->path, ENT_QUOTES, 'UTF-8') .
-                ' seems not writable'
+                'Temp directory ' . dirname($this->path) . ' is not writable'
             );
         }
 
@@ -186,6 +184,12 @@ class FileCache implements CacheInterface
      */
     private function isValidFile($file)
     {
-        return file_exists($file) && time() - filectime($file) <= $this->config['expiration_time'];
+        if (!file_exists($file))
+            return false;
+
+        if ($this->config['expiration_time'] < 1) // no expiration
+            return true;
+
+        return (time() - filectime($file)) <= $this->config['expiration_time'];
     }
 }

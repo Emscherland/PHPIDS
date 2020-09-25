@@ -5,6 +5,7 @@
 /docs/coverage/
 /vendor/
 /phpunit.xml
+/.phpunit*
 
 # Don't include lock file
 composer.lock

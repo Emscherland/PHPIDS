@@ -113,7 +113,7 @@ class ApcCache implements CacheInterface
      *
      * @return object $this
      */
-    public function setCache(array $data)
+    public function setCache(array $data): CacheInterface
     {
         if (!$this->isCached) {
             apc_store(
