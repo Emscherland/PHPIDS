@@ -29,7 +29,10 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS;
+
+use InvalidArgumentException;
 
 /**
  * Framework initiation
@@ -71,7 +74,7 @@ class Init
      *
      * @param array $config
      *
-     * @return \IDS\Init $this
+     * @return Init $this
      */
     public function __construct(array $config = array())
     {
@@ -84,8 +87,8 @@ class Init
      *
      * @param string|null $configPath the path to the config file
      *
-     * @throws \InvalidArgumentException
      * @return self
+     * @throws InvalidArgumentException
      */
     public static function init($configPath = null)
     {
@@ -94,7 +97,7 @@ class Init
         }
         if (!isset(self::$instances[$configPath])) {
             if (!file_exists($configPath) || !is_readable($configPath)) {
-                throw new \InvalidArgumentException("Invalid config path '$configPath'");
+                throw new InvalidArgumentException("Invalid config path '$configPath'");
             }
             self::$instances[$configPath] = new static(parse_ini_file($configPath, true));
         }
@@ -112,14 +115,14 @@ class Init
     public function getBasePath()
     {
         return (!empty($this->config['General']['base_path'])
-                && !empty($this->config['General']['use_base_path']))
+            && !empty($this->config['General']['use_base_path']))
             ? $this->config['General']['base_path'] : null;
     }
 
     /**
      * Merges new settings into the exsiting ones or overwrites them
      *
-     * @param array   $config    the config array
+     * @param array $config the config array
      * @param boolean $overwrite config overwrite flag
      *
      * @return void
@@ -140,8 +143,8 @@ class Init
      * an array in both, the values will be appended. If it is a scalar in both,
      * the value will be replaced.
      *
-     * @param  array $current   The legacy hash
-     * @param  array $successor The hash which values count more when in doubt
+     * @param array $current The legacy hash
+     * @param array $successor The hash which values count more when in doubt
      * @return array Merged hash
      */
     protected function mergeConfig($current, $successor)

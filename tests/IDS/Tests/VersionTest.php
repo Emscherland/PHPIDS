@@ -14,13 +14,15 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @package	PHPIDS tests
+ * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Version;
+use PHPUnit_Framework_TestCase;
 
-class VersionTest extends \PHPUnit_Framework_TestCase
+class VersionTest extends PHPUnit_Framework_TestCase
 {
     public function testVersionConstantIsDefined()
     {

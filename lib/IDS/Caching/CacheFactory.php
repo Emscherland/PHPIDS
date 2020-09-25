@@ -29,6 +29,7 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS\Caching;
 
 /**
@@ -59,14 +60,14 @@ class CacheFactory
      */
     public static function factory($init, $type)
     {
-        $object  = false;
+        $object = false;
         $wrapper = preg_replace(
             '/\W+/m',
             null,
             ucfirst($init->config['Caching']['caching'])
         );
-        $class   = '\\IDS\\Caching\\' . $wrapper . 'Cache';
-        $path    = dirname(__FILE__) . DIRECTORY_SEPARATOR . $wrapper . 'Cache.php';
+        $class = '\\IDS\\Caching\\' . $wrapper . 'Cache';
+        $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . $wrapper . 'Cache.php';
 
         if (file_exists($path)) {
             include_once $path;

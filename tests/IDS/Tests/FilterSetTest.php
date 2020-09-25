@@ -16,13 +16,15 @@
  *
  * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Init;
 use IDS\Filter;
 use IDS\Filter\Storage;
+use PHPUnit_Framework_TestCase;
 
-class FilterSetTest extends \PHPUnit_Framework_TestCase
+class FilterSetTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var array

@@ -16,14 +16,16 @@
  *
  * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Init;
+use PHPUnit_Framework_TestCase;
 
-class InitTest extends \PHPUnit_Framework_TestCase
+class InitTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var \IDS\Init
+     * @var Init
      */
     private $init = null;
 

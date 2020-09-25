@@ -14,8 +14,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @package	PHPIDS tests
+ * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Report;
@@ -23,8 +24,9 @@ use IDS\Event;
 use IDS\Filter;
 use IDS\Init;
 use IDS\Monitor;
+use PHPUnit_Framework_TestCase;
 
-class ExceptionTest extends \PHPUnit_Framework_TestCase
+class ExceptionTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Report
@@ -59,41 +61,41 @@ class ExceptionTest extends \PHPUnit_Framework_TestCase
     public function testEventConstructorExceptions1()
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Event(array(1,2), 'val_b',
-                array(
-                    new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
-                    new Filter(1, '^test_a2$', 'desc_a2', array('tag_a2', 'tag_a3'), 2)
-                )
+        new Event(array(1, 2), 'val_b',
+            array(
+                new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
+                new Filter(1, '^test_a2$', 'desc_a2', array('tag_a2', 'tag_a3'), 2)
+            )
         );
     }
 
     public function testEventConstructorExceptions2()
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Event("key_a", array(1,2),
-                array(
-                    new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
-                    new Filter(1, '^test_a2$', 'desc_a2', array('tag_a2', 'tag_a3'), 2)
-                )
+        new Event("key_a", array(1, 2),
+            array(
+                new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
+                new Filter(1, '^test_a2$', 'desc_a2', array('tag_a2', 'tag_a3'), 2)
+            )
         );
     }
 
     public function testEventConstructorExceptions3()
     {
         $this->setExpectedException('InvalidArgumentException');
-        new Event("key_a", 'val_b', array(1,2));
+        new Event("key_a", 'val_b', array(1, 2));
     }
 
     public function testGetEventException()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->report->getEvent(array(1,2,3));
+        $this->report->getEvent(array(1, 2, 3));
     }
 
     public function testHasEventException()
     {
         $this->setExpectedException('InvalidArgumentException');
-        $this->report->hasEvent(array(1,2,3));
+        $this->report->hasEvent(array(1, 2, 3));
     }
 
     public function testInitConfigWrongPathException()

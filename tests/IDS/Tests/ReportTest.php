@@ -14,15 +14,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @package	PHPIDS tests
+ * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Report;
 use IDS\Event;
 use IDS\Filter;
+use PHPUnit_Framework_TestCase;
 
-class ReportTest extends \PHPUnit_Framework_TestCase
+class ReportTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Report
@@ -97,7 +99,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $this->assertEquals(preg_match('/Total impact: 10/', $this->report->__toString()),1);
+        $this->assertEquals(preg_match('/Total impact: 10/', $this->report->__toString()), 1);
     }
 
     public function testToStringEmpty()

@@ -29,10 +29,15 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS\Filter;
 
+use IDS\Filter;
 use IDS\Init;
 use IDS\Caching\CacheFactory;
+use InvalidArgumentException;
+use RuntimeException;
+use SimpleXMLElement;
 
 /**
  * Filter Storage
@@ -87,17 +92,17 @@ class Storage
      *
      * @param object $init IDS_Init instance
      *
-     * @throws \InvalidArgumentException if unsupported filter type is given
      * @return void
+     * @throws InvalidArgumentException if unsupported filter type is given
      */
     final public function __construct(Init $init)
     {
         if ($init->config) {
 
-            $caching      = isset($init->config['Caching']['caching']) ? $init->config['Caching']['caching'] : 'none';
+            $caching = isset($init->config['Caching']['caching']) ? $init->config['Caching']['caching'] : 'none';
 
-            $type         = $init->config['General']['filter_type'];
-            $this->source = $init->getBasePath(). $init->config['General']['filter_path'];
+            $type = $init->config['General']['filter_type'];
+            $this->source = $init->getBasePath() . $init->config['General']['filter_path'];
 
             if ($caching && $caching !== 'none') {
                 $this->cacheSettings = $init->config['Caching'];
@@ -110,7 +115,7 @@ class Storage
                 case 'json':
                     return $this->getFilterFromJson();
                 default:
-                    throw new \InvalidArgumentException('Unsupported filter type.');
+                    throw new InvalidArgumentException('Unsupported filter type.');
             }
         }
     }
@@ -148,7 +153,7 @@ class Storage
      *
      * @return object $this
      */
-    final public function addFilter(\IDS\Filter $filter)
+    final public function addFilter(Filter $filter)
     {
         $this->filterSet[] = $filter;
 
@@ -180,8 +185,8 @@ class Storage
      * If caching mode is enabled the result will be cached to increase
      * the performance.
      *
-     * @throws \InvalidArgumentException if source file doesn't exist
-     * @throws \RuntimeException if problems with fetching the XML data occur
+     * @throws InvalidArgumentException if source file doesn't exist
+     * @throws RuntimeException if problems with fetching the XML data occur
      * @return object    $this
      */
     public function getFilterFromXML()
@@ -199,7 +204,7 @@ class Storage
             if (!$filters) {
 
                 if (!file_exists($this->source)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf('Invalid config: %s doesn\'t exist.', $this->source)
                     );
                 }
@@ -216,7 +221,7 @@ class Storage
              * will be thrown
              */
             if (empty($filters)) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'XML data could not be loaded.' .
                     ' Make sure you specified the correct path.'
                 );
@@ -225,49 +230,48 @@ class Storage
             /*
              * Now the storage will be filled with IDS_Filter objects
              */
-            $nocache = $filters instanceof \SimpleXMLElement;
-            
-            if ($nocache)
-            {
+            $nocache = $filters instanceof SimpleXMLElement;
+
+            if ($nocache) {
                 // build filters and cache them for re-use on next run
-                $data    = array();
+                $data = array();
                 $filters = $filters->filter;
-                
+
                 foreach ($filters as $filter) {
-                    $id          = (string) $filter->id;
-                    $rule        = (string) $filter->rule;
-                    $impact      = (string) $filter->impact;
-                    $tags        = array_values((array) $filter->tags);
-                    $description = (string) $filter->description;
-                
+                    $id = (string)$filter->id;
+                    $rule = (string)$filter->rule;
+                    $impact = (string)$filter->impact;
+                    $tags = array_values((array)$filter->tags);
+                    $description = (string)$filter->description;
+
                     $this->addFilter(
-                            new \IDS\Filter(
-                                    $id,
-                                    $rule,
-                                    $description,
-                                    (array) $tags[0],
-                                    (int) $impact
-                            )
+                        new Filter(
+                            $id,
+                            $rule,
+                            $description,
+                            (array)$tags[0],
+                            (int)$impact
+                        )
                     );
-                
+
                     $data[] = array(
-                            'id'          => $id,
-                            'rule'        => $rule,
-                            'impact'      => $impact,
-                            'tags'        => $tags,
-                            'description' => $description
+                        'id' => $id,
+                        'rule' => $rule,
+                        'impact' => $impact,
+                        'tags' => $tags,
+                        'description' => $description
                     );
                 }
-                
+
                 /*
                  * If caching is enabled, the fetched data will be cached
                 */
                 if ($this->cacheSettings) {
                     $this->cache->setCache($data);
                 }
-                
+
             } else {
-            
+
                 // build filters from cached content
                 $this->addFiltersFromArray($filters);
             }
@@ -275,7 +279,7 @@ class Storage
             return $this;
         }
 
-        throw new \RuntimeException('SimpleXML is not loaded.');
+        throw new RuntimeException('SimpleXML is not loaded.');
     }
 
     /**
@@ -285,8 +289,8 @@ class Storage
      * If caching mode is enabled the result will be cached to increase
      * the performance.
      *
-     * @throws \RuntimeException if problems with fetching the JSON data occur
      * @return object    $this
+     * @throws RuntimeException if problems with fetching the JSON data occur
      */
     public function getFilterFromJson()
     {
@@ -303,7 +307,7 @@ class Storage
              */
             if (!$filters) {
                 if (!file_exists($this->source)) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         sprintf('Invalid config: %s doesn\'t exist.', $this->source)
                     );
                 }
@@ -311,56 +315,56 @@ class Storage
             }
 
             if (!$filters) {
-                throw new \RuntimeException('JSON data could not be loaded. Make sure you specified the correct path.');
+                throw new RuntimeException('JSON data could not be loaded. Make sure you specified the correct path.');
             }
 
             /*
              * Now the storage will be filled with IDS_Filter objects
              */
             $nocache = !is_array($filters);
-            
+
             if ($nocache) {
-                
+
                 // build filters and cache them for re-use on next run
-                $data    = array();
+                $data = array();
                 $filters = $filters->filters->filter;
-                
+
                 foreach ($filters as $filter) {
 
-                    $id          = (string) $filter->id;
-                    $rule        = (string) $filter->rule;
-                    $impact      = (string) $filter->impact;
-                    $tags        = array_values((array) $filter->tags);
-                    $description = (string) $filter->description;
-    
+                    $id = (string)$filter->id;
+                    $rule = (string)$filter->rule;
+                    $impact = (string)$filter->impact;
+                    $tags = array_values((array)$filter->tags);
+                    $description = (string)$filter->description;
+
                     $this->addFilter(
-                        new \IDS\Filter(
+                        new Filter(
                             $id,
                             $rule,
                             $description,
-                            (array) $tags[0],
-                            (int) $impact
+                            (array)$tags[0],
+                            (int)$impact
                         )
                     );
-    
+
                     $data[] = array(
-                        'id'          => $id,
-                        'rule'        => $rule,
-                        'impact'      => $impact,
-                        'tags'        => $tags,
+                        'id' => $id,
+                        'rule' => $rule,
+                        'impact' => $impact,
+                        'tags' => $tags,
                         'description' => $description
                     );
                 }
-    
+
                 /*
                  * If caching is enabled, the fetched data will be cached
                  */
                 if ($this->cacheSettings) {
                     $this->cache->setCache($data);
                 }
-                
+
             } else {
-                
+
                 // build filters from cached content
                 $this->addFiltersFromArray($filters);
             }
@@ -368,32 +372,32 @@ class Storage
             return $this;
         }
 
-        throw new \RuntimeException('json extension is not loaded.');
+        throw new RuntimeException('json extension is not loaded.');
     }
-    
+
     /**
      * This functions adds an array of filters to the IDS_Storage object.
      * Each entry within the array is expected to be an simple array containing all parts of the filter.
-     * 
+     *
      * @param array $filters
      */
     private function addFiltersFromArray(array $filters)
     {
         foreach ($filters as $filter) {
-        
-            $id          = $filter['id'];
-            $rule        = $filter['rule'];
-            $impact      = $filter['impact'];
-            $tags        = $filter['tags'];
+
+            $id = $filter['id'];
+            $rule = $filter['rule'];
+            $impact = $filter['impact'];
+            $tags = $filter['tags'];
             $description = $filter['description'];
-        
+
             $this->addFilter(
-                new \IDS\Filter(
+                new Filter(
                     $id,
                     $rule,
                     $description,
-                    (array) $tags[0],
-                    (int) $impact
+                    (array)$tags[0],
+                    (int)$impact
                 )
             );
         }

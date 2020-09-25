@@ -95,7 +95,7 @@ class Converter
             );
 
             $converted = preg_replace($pattern, ';', $value);
-            $value    .= "\n" . $converted;
+            $value .= "\n" . $converted;
         }
 
         //make sure inline comments are detected and converted correctly
@@ -120,7 +120,7 @@ class Converter
     {
         //check for inline linebreaks
         $search = array('\r', '\n', '\f', '\t', '\v');
-        $value  = str_replace($search, ';', $value);
+        $value = str_replace($search, ';', $value);
 
         // replace replacement characters regular spaces
         $value = str_replace('�', ' ', $value);
@@ -144,10 +144,10 @@ class Converter
         // check if value matches typical charCode pattern
         if (preg_match_all('/(?:[\d+-=\/\* ]+(?:\s?,\s?[\d+-=\/\* ]+)){4,}/ms', $value, $matches)) {
             $converted = '';
-            $string    = implode(',', $matches[0]);
-            $string    = preg_replace('/\s/', '', $string);
-            $string    = preg_replace('/\w+=/', '', $string);
-            $charcode  = explode(',', $string);
+            $string = implode(',', $matches[0]);
+            $string = preg_replace('/\s/', '', $string);
+            $string = preg_replace('/\w+=/', '', $string);
+            $charcode = explode(',', $string);
 
             foreach ($charcode as $char) {
                 $char = preg_replace('/\W0/s', '', $char);
@@ -170,7 +170,7 @@ class Converter
         // check for octal charcode pattern
         if (preg_match_all('/(?:(?:[\\\]+\d+[ \t]*){8,})/ims', $value, $matches)) {
             $converted = '';
-            $charcode  = explode('\\', preg_replace('/\s/', '', implode(',', $matches[0])));
+            $charcode = explode('\\', preg_replace('/\s/', '', implode(',', $matches[0])));
 
             foreach (array_map('octdec', array_filter($charcode)) as $char) {
                 if (20 <= $char && $char <= 127) {
@@ -183,7 +183,7 @@ class Converter
         // check for hexadecimal charcode pattern
         if (preg_match_all('/(?:(?:[\\\]+\w+\s*){8,})/ims', $value, $matches)) {
             $converted = '';
-            $charcode  = explode('\\', preg_replace('/[ux]/', '', implode(',', $matches[0])));
+            $charcode = explode('\\', preg_replace('/[ux]/', '', implode(',', $matches[0])));
 
             foreach (array_map('hexdec', array_filter($charcode)) as $char) {
                 if (20 <= $char && $char <= 127) {
@@ -227,7 +227,7 @@ class Converter
         if (preg_match('/&#x?[\w]+/ms', $value)) {
             $converted = preg_replace('/(&#x?[\w]{2}\d?);?/ms', '$1;', $value);
             $converted = html_entity_decode($converted, ENT_QUOTES, 'UTF-8');
-            $value    .= "\n" . str_replace(';;', ';', $converted);
+            $value .= "\n" . str_replace(';;', ';', $converted);
         }
 
         // normalize obfuscated protocol handlers
@@ -252,7 +252,7 @@ class Converter
     {
         // normalize different quotes to "
         $pattern = array('\'', '`', '´', '’', '‘');
-        $value   = str_replace($pattern, '"', $value);
+        $value = str_replace($pattern, '"', $value);
 
         //make sure harmless quoted strings don't generate false alerts
         $value = preg_replace('/^"([^"=\\!><~]+)"$/', '$1', $value);
@@ -302,15 +302,15 @@ class Converter
             '/(?:is\s+null)|(like\s+null)|' .
             '(?:(?:^|\W)in[+\s]*\([\s\d"]+[^()]*\))/ims'
         );
-        $value   = preg_replace($pattern, '"=0', $value);
+        $value = preg_replace($pattern, '"=0', $value);
 
-        $value   = preg_replace('/[^\w\)]+\s*like\s*[^\w\s]+/ims', '1" OR "1"', $value);
-        $value   = preg_replace('/null([,"\s])/ims', '0$1', $value);
-        $value   = preg_replace('/\d+\./ims', ' 1', $value);
-        $value   = preg_replace('/,null/ims', ',0', $value);
-        $value   = preg_replace('/(?:between)/ims', 'or', $value);
-        $value   = preg_replace('/(?:and\s+\d+\.?\d*)/ims', '', $value);
-        $value   = preg_replace('/(?:\s+and\s+)/ims', ' or ', $value);
+        $value = preg_replace('/[^\w\)]+\s*like\s*[^\w\s]+/ims', '1" OR "1"', $value);
+        $value = preg_replace('/null([,"\s])/ims', '0$1', $value);
+        $value = preg_replace('/\d+\./ims', ' 1', $value);
+        $value = preg_replace('/,null/ims', ',0', $value);
+        $value = preg_replace('/(?:between)/ims', 'or', $value);
+        $value = preg_replace('/(?:and\s+\d+\.?\d*)/ims', '', $value);
+        $value = preg_replace('/(?:\s+and\s+)/ims', ' or ', $value);
 
         $pattern = array(
             '/(?:not\s+between)|(?:is\s+not)|(?:not\s+in)|' .
@@ -318,10 +318,10 @@ class Converter
             '(?:regexp\s+binary)|' .
             '(?:sounds\s+like)/ims'
         );
-        $value   = preg_replace($pattern, '!', $value);
-        $value   = preg_replace('/"\s+\d/', '"', $value);
-        $value   = preg_replace('/(\W)div(\W)/ims', '$1 OR $2', $value);
-        $value   = preg_replace('/\/(?:\d+|null)/', null, $value);
+        $value = preg_replace($pattern, '!', $value);
+        $value = preg_replace('/"\s+\d/', '"', $value);
+        $value = preg_replace('/(\W)div(\W)/ims', '$1 OR $2', $value);
+        $value = preg_replace('/\/(?:\d+|null)/', null, $value);
 
         return $value;
     }
@@ -512,28 +512,28 @@ class Converter
             } else {
                 //list of all critical UTF7 codepoints
                 $schemes = array(
-                    '+ACI-'      => '"',
-                    '+ADw-'      => '<',
-                    '+AD4-'      => '>',
-                    '+AFs-'      => '[',
-                    '+AF0-'      => ']',
-                    '+AHs-'      => '{',
-                    '+AH0-'      => '}',
-                    '+AFw-'      => '\\',
-                    '+ADs-'      => ';',
-                    '+ACM-'      => '#',
-                    '+ACY-'      => '&',
-                    '+ACU-'      => '%',
-                    '+ACQ-'      => '$',
-                    '+AD0-'      => '=',
-                    '+AGA-'      => '`',
-                    '+ALQ-'      => '"',
-                    '+IBg-'      => '"',
-                    '+IBk-'      => '"',
-                    '+AHw-'      => '|',
-                    '+ACo-'      => '*',
-                    '+AF4-'      => '^',
-                    '+ACIAPg-'   => '">',
+                    '+ACI-' => '"',
+                    '+ADw-' => '<',
+                    '+AD4-' => '>',
+                    '+AFs-' => '[',
+                    '+AF0-' => ']',
+                    '+AHs-' => '{',
+                    '+AH0-' => '}',
+                    '+AFw-' => '\\',
+                    '+ADs-' => ';',
+                    '+ACM-' => '#',
+                    '+ACY-' => '&',
+                    '+ACU-' => '%',
+                    '+ACQ-' => '$',
+                    '+AD0-' => '=',
+                    '+AGA-' => '`',
+                    '+ALQ-' => '"',
+                    '+IBg-' => '"',
+                    '+IBk-' => '"',
+                    '+AHw-' => '|',
+                    '+ACo-' => '*',
+                    '+AF4-' => '^',
+                    '+ACIAPg-' => '">',
                     '+ACIAPgA8-' => '">'
                 );
 
@@ -662,20 +662,20 @@ class Converter
         return $value;
     }
 
-  /**
-   * This method removes encoded sql # comments
-   *
-   * @param string $value the value to convert
-   *
-   * @static
-   * @return string
-   */
+    /**
+     * This method removes encoded sql # comments
+     *
+     * @param string $value the value to convert
+     *
+     * @static
+     * @return string
+     */
     public static function convertFromUrlencodeSqlComment($value)
     {
-        if (preg_match_all('/(?:\%23.*?\%0a)/im',$value,$matches)){
+        if (preg_match_all('/(?:\%23.*?\%0a)/im', $value, $matches)) {
             $converted = $value;
-            foreach($matches[0] as $match){
-                $converted = str_replace($match,' ',$converted);
+            foreach ($matches[0] as $match) {
+                $converted = str_replace($match, ' ', $converted);
             }
             $value .= "\n" . $converted;
         }
@@ -685,7 +685,7 @@ class Converter
     /**
      * This method is the centrifuge prototype
      *
-     * @param string  $value   the value to convert
+     * @param string $value the value to convert
      * @param Monitor $monitor the monitor object
      *
      * @static
@@ -722,9 +722,9 @@ class Converter
                 )
             );
 
-            if ($stripped_length != 0 && $overall_length/$stripped_length <= $threshold) {
-                $monitor->centrifuge['ratio']     = $overall_length / $stripped_length;
-                $monitor->centrifuge['threshold'] =$threshold;
+            if ($stripped_length != 0 && $overall_length / $stripped_length <= $threshold) {
+                $monitor->centrifuge['ratio'] = $overall_length / $stripped_length;
+                $monitor->centrifuge['threshold'] = $threshold;
 
                 $value .= "\n$[!!!]";
             }
@@ -732,7 +732,7 @@ class Converter
 
         if (strlen($value) > 40) {
             // Replace all non-special chars
-            $converted =  preg_replace('/[\w\s\p{L},.:!]/', null, $value);
+            $converted = preg_replace('/[\w\s\p{L},.:!]/', null, $value);
 
             // Split string into an array, unify and sort
             $array = str_split($converted);

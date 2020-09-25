@@ -29,7 +29,14 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS;
+
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use Iterator;
+use IteratorAggregate;
 
 /**
  * PHPIDS report object
@@ -49,7 +56,7 @@ namespace IDS;
  * @license   http://www.gnu.org/licenses/lgpl.html LGPL
  * @link      http://php-ids.org/
  */
-class Report implements \Countable, \IteratorAggregate
+class Report implements Countable, IteratorAggregate
 {
     /**
      * Event container
@@ -97,7 +104,7 @@ class Report implements \Countable, \IteratorAggregate
      */
     public function __construct(array $events = null)
     {
-        foreach ((array) $events as $event) {
+        foreach ((array)$events as $event) {
             $this->addEvent($event);
         }
     }
@@ -125,13 +132,13 @@ class Report implements \Countable, \IteratorAggregate
      *
      * @param string|integer $name the event name
      *
-     * @throws \InvalidArgumentException if argument is invalid
      * @return Event|null                    IDS_Event object or false if the event does not exist
+     * @throws InvalidArgumentException if argument is invalid
      */
     public function getEvent($name)
     {
         if (!is_scalar($name)) {
-            throw new \InvalidArgumentException('Invalid argument type given');
+            throw new InvalidArgumentException('Invalid argument type given');
         }
 
         return $this->hasEvent($name) ? $this->events[$name] : null;
@@ -182,13 +189,13 @@ class Report implements \Countable, \IteratorAggregate
      *
      * @param string|integer $name the event name
      *
-     * @throws \InvalidArgumentException if argument is illegal
      * @return boolean
+     * @throws InvalidArgumentException if argument is illegal
      */
     public function hasEvent($name)
     {
         if (!is_scalar($name)) {
-            throw new \InvalidArgumentException('Invalid argument given');
+            throw new InvalidArgumentException('Invalid argument given');
         }
 
         return isset($this->events[$name]);
@@ -204,18 +211,18 @@ class Report implements \Countable, \IteratorAggregate
         return count($this->events);
     }
 
-     /**
+    /**
      * Return iterator object
      *
      * In order to provide the possibility to directly iterate over the
      * IDS_Event object the IteratorAggregate is implemented. One can easily
      * use foreach() to iterate through all stored IDS_Event objects.
      *
-     * @return \Iterator the event collection
+     * @return Iterator the event collection
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->events);
+        return new ArrayIterator($this->events);
     }
 
     /**
@@ -236,7 +243,7 @@ class Report implements \Countable, \IteratorAggregate
     protected function clear()
     {
         $this->impact = 0;
-        $this->tags   = array();
+        $this->tags = array();
     }
 
     /**
@@ -255,13 +262,13 @@ class Report implements \Countable, \IteratorAggregate
      *
      * @param array $centrifuge the centrifuge data
      *
-     * @throws \InvalidArgumentException if argument is illegal
      * @return void
+     * @throws InvalidArgumentException if argument is illegal
      */
     public function setCentrifuge(array $centrifuge = array())
     {
         if (!$centrifuge) {
-            throw new \InvalidArgumentException('Empty centrifuge given');
+            throw new InvalidArgumentException('Empty centrifuge given');
         }
         $this->centrifuge = $centrifuge;
     }

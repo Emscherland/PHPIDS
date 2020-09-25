@@ -80,7 +80,7 @@ class SessionCache implements CacheInterface
      */
     public function __construct($type, $init)
     {
-        $this->type   = $type;
+        $this->type = $type;
         $this->config = $init->config['Caching'];
     }
 

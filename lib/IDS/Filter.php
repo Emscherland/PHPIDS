@@ -29,7 +29,10 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS;
+
+use InvalidArgumentException;
 
 /**
  * PHPIDS Filter object
@@ -81,20 +84,20 @@ class Filter
     /**
      * Constructor
      *
-     * @param integer           $id          filter id
-     * @param string            $rule        filter rule
-     * @param string            $description filter description
-     * @param string[]|array    $tags        list of tags
-     * @param integer           $impact      filter impact level
+     * @param integer $id filter id
+     * @param string $rule filter rule
+     * @param string $description filter description
+     * @param string[]|array $tags list of tags
+     * @param integer $impact filter impact level
      *
-     * @return \IDS\Filter
+     * @return Filter
      */
     public function __construct($id, $rule, $description, array $tags, $impact)
     {
-        $this->id          = $id;
-        $this->rule        = $rule;
-        $this->tags        = $tags;
-        $this->impact      = $impact;
+        $this->id = $id;
+        $this->rule = $rule;
+        $this->tags = $tags;
+        $this->impact = $impact;
         $this->description = $description;
     }
 
@@ -106,18 +109,18 @@ class Filter
      *
      * @param string $input the string input to match
      *
-     * @throws \InvalidArgumentException if argument is no string
      * @return boolean
+     * @throws InvalidArgumentException if argument is no string
      */
     public function match($input)
     {
         if (!is_string($input)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid argument. Expected a string, received ' . gettype($input)
             );
         }
 
-        return (bool) preg_match('/' . $this->getRule() . '/ms', strtolower($input));
+        return (bool)preg_match('/' . $this->getRule() . '/ms', strtolower($input));
     }
 
     /**

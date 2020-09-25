@@ -16,12 +16,14 @@
  *
  * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Init;
 use IDS\Monitor;
+use PHPUnit_Framework_TestCase;
 
-class RuleTest extends \PHPUnit_Framework_TestCase
+class RuleTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Init

@@ -29,7 +29,11 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS\Caching;
+
+use Exception;
+use Memcache;
 
 /**
  * File caching wrapper
@@ -87,14 +91,14 @@ class MemcachedCache implements CacheInterface
      * Constructor
      *
      * @param string $type caching type
-     * @param array  $init the IDS_Init object
+     * @param array $init the IDS_Init object
      *
      * @return void
      */
     public function __construct($type, $init)
     {
 
-        $this->type   = $type;
+        $this->type = $type;
         $this->config = $init->config['Caching'];
 
         $this->connect();
@@ -160,22 +164,22 @@ class MemcachedCache implements CacheInterface
     /**
      * Connect to the memcached server
      *
-     * @throws Exception if connection parameters are insufficient
      * @return void
+     * @throws Exception if connection parameters are insufficient
      */
     private function connect()
     {
 
         if ($this->config['host'] && $this->config['port']) {
             // establish the memcache connection
-            $this->memcache = new \Memcache;
+            $this->memcache = new Memcache;
             $this->memcache->pconnect(
                 $this->config['host'],
                 $this->config['port']
             );
 
         } else {
-            throw new \Exception('Insufficient connection parameters');
+            throw new Exception('Insufficient connection parameters');
         }
     }
 }

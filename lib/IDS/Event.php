@@ -29,7 +29,14 @@
  * @license  http://www.gnu.org/licenses/lgpl.html LGPL
  * @link     http://php-ids.org/
  */
+
 namespace IDS;
+
+use ArrayIterator;
+use Countable;
+use InvalidArgumentException;
+use Iterator;
+use IteratorAggregate;
 
 /**
  * PHPIDS event object
@@ -49,7 +56,7 @@ namespace IDS;
  * @license   http://www.gnu.org/licenses/lgpl.html LGPL
  * @link      http://php-ids.org/
  */
-class Event implements \Countable, \IteratorAggregate
+class Event implements Countable, IteratorAggregate
 {
     /**
      * Event name
@@ -95,33 +102,33 @@ class Event implements \Countable, \IteratorAggregate
      *
      * Fills event properties
      *
-     * @param string            $name    the event name
-     * @param mixed             $value   the event value
-     * @param Filter[]|array    $filters the corresponding filters
+     * @param string $name the event name
+     * @param mixed $value the event value
+     * @param Filter[]|array $filters the corresponding filters
      *
-     * @throws \InvalidArgumentException
-     * @return \IDS\Event
+     * @return Event
+     * @throws InvalidArgumentException
      */
     public function __construct($name, $value, array $filters)
     {
         if (!is_scalar($name)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Expected $name to be a scalar,' . gettype($name) . ' given'
             );
         }
 
         if (!is_scalar($value)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Expected $value to be a scalar,' . gettype($value) . ' given'
             );
         }
 
-        $this->name  = $name;
+        $this->name = $name;
         $this->value = $value;
 
         foreach ($filters as $filter) {
             if (!$filter instanceof Filter) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     'Filter must be derived from IDS_Filter'
                 );
             }
@@ -212,10 +219,10 @@ class Event implements \Countable, \IteratorAggregate
      *
      * Returns an iterator to iterate over the appended filters.
      *
-     * @return \Iterator the filter collection
+     * @return Iterator the filter collection
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->getFilters());
+        return new ArrayIterator($this->getFilters());
     }
 }

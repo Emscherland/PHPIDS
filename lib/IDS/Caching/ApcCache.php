@@ -79,13 +79,13 @@ class ApcCache implements CacheInterface
      * Constructor
      *
      * @param string $type caching type
-     * @param array  $init the IDS_Init object
+     * @param array $init the IDS_Init object
      *
      * @return void
      */
     public function __construct($type, $init)
     {
-        $this->type   = $type;
+        $this->type = $type;
         $this->config = $init->config['Caching'];
     }
 

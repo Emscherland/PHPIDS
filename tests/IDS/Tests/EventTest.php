@@ -14,14 +14,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * @package	PHPIDS tests
+ * @package    PHPIDS tests
  */
+
 namespace IDS\Tests;
 
 use IDS\Event;
 use IDS\Filter;
+use PHPUnit_Framework_TestCase;
 
-class EventTest extends \PHPUnit_Framework_TestCase
+class EventTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Event
