@@ -49,3 +49,5 @@ Thumbs.db
 
 # PhpStorm (IDE) project files
 /.idea
+.buildpath
+.project
