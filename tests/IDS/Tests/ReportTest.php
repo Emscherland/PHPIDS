@@ -22,16 +22,16 @@ namespace IDS\Tests;
 use IDS\Report;
 use IDS\Event;
 use IDS\Filter;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ReportTest extends PHPUnit_Framework_TestCase
+class ReportTest extends TestCase
 {
     /**
      * @var Report
      */
     protected $report;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->report = new Report(array(
             new Event("key_a", 'val_b',

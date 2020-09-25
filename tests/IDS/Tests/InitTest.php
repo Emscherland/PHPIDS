@@ -20,16 +20,16 @@
 namespace IDS\Tests;
 
 use IDS\Init;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class InitTest extends PHPUnit_Framework_TestCase
+class InitTest extends TestCase
 {
     /**
      * @var Init
      */
     private $init = null;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->init = Init::init(IDS_CONFIG);
     }

@@ -22,9 +22,9 @@ namespace IDS\Tests;
 use IDS\Init;
 use IDS\Filter;
 use IDS\Filter\Storage;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class FilterSetTest extends PHPUnit_Framework_TestCase
+class FilterSetTest extends TestCase
 {
     /**
      * @var array
@@ -36,7 +36,7 @@ class FilterSetTest extends PHPUnit_Framework_TestCase
      */
     protected $xmlFilter;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->jsonFilter = $this->getFilterset('json');
         $this->xmlFilter = $this->getFilterSet('xml');

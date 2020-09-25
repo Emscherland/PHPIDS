@@ -20,9 +20,9 @@
 namespace IDS\Tests;
 
 use IDS\Version;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class VersionTest extends PHPUnit_Framework_TestCase
+class VersionTest extends TestCase
 {
     public function testVersionConstantIsDefined()
     {

@@ -22,16 +22,17 @@ namespace IDS\Tests;
 use IDS\Filter;
 use IDS\Filter\Storage;
 use IDS\Init;
-use PHPUnit_Framework_TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
-class FilterTest extends PHPUnit_Framework_TestCase
+class FilterTest extends TestCase
 {
     /**
      * @var Init
      */
     protected $init;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->init = Init::init(IDS_CONFIG);
     }
@@ -62,7 +63,7 @@ class FilterTest extends PHPUnit_Framework_TestCase
 
     public function testInvalidArgumentOnMatch()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $filter = new Filter(1, '^test$', 'My description', array('foo', 'bar'), 10);
         $filter->match(1);
     }
@@ -70,14 +71,14 @@ class FilterTest extends PHPUnit_Framework_TestCase
     public function testInvalidArgumentInFilterInstanciation1()
     {
         $this->markTestSkipped('The values are not validated properly on instanciation');
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         new Filter(1, '^test$', 'my desc', array('foo'), 'test');
     }
 
     public function testInvalidArgumentInFilterInstanciation2()
     {
         $this->markTestSkipped('The values are not validated properly on instanciation');
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         new Filter(1, 1, 'my desc', array("foo"), 'bla');
     }
 

@@ -21,16 +21,16 @@ namespace IDS\Tests;
 
 use IDS\Event;
 use IDS\Filter;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class EventTest extends PHPUnit_Framework_TestCase
+class EventTest extends TestCase
 {
     /**
      * @var Event
      */
     protected $event;
 
-    public function setUp()
+    public function setUp():void
     {
         $this->event = new Event("handled_key", "my val",
             array(

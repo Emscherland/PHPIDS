@@ -17,22 +17,23 @@
  * @package    PHPIDS tests
  */
 
+
 namespace IDS\Tests;
 
 use IDS\Init;
 use IDS\Caching\CacheFactory;
 use IDS\Caching\FileCache;
 use IDS\Caching\SessionCache;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class CachingTest extends PHPUnit_Framework_TestCase
+class CachingTest extends TestCase
 {
     /**
      * @var Init
      */
     protected $init;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->init = Init::init(IDS_CONFIG);
     }
@@ -40,7 +41,7 @@ class CachingTest extends PHPUnit_Framework_TestCase
     public function testCachingNone()
     {
         $this->init->config['Caching']['caching'] = 'none';
-        $this->assertFalse(CacheFactory::factory($this->init, 'storage'));
+        $this->assertNull(CacheFactory::factory($this->init, 'storage'));
     }
 
     public function testCachingFile()
@@ -104,7 +105,7 @@ class CachingTest extends PHPUnit_Framework_TestCase
         $this->assertFalse($cache->getCache());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         @unlink(IDS_FILTER_CACHE_FILE);
     }

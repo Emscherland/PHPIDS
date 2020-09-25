@@ -21,9 +21,9 @@ namespace IDS\Tests;
 
 use IDS\Init;
 use IDS\Monitor;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class RuleTest extends PHPUnit_Framework_TestCase
+class RuleTest extends TestCase
 {
     /**
      * @var Init
@@ -49,7 +49,7 @@ class RuleTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function setUp()
+    public function setUp():void
     {
         $this->init = Init::init(IDS_CONFIG);
         $this->init->config['General']['tmp_path'] = IDS_TEMP_DIR;

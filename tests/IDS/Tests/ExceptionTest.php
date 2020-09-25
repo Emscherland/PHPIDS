@@ -24,9 +24,10 @@ use IDS\Event;
 use IDS\Filter;
 use IDS\Init;
 use IDS\Monitor;
-use PHPUnit_Framework_TestCase;
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
-class ExceptionTest extends PHPUnit_Framework_TestCase
+class ExceptionTest extends TestCase
 {
     /**
      * @var Report
@@ -38,7 +39,7 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
      */
     protected $init;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->report = new Report(array(
             new Event("key_a", 'val_b',
@@ -60,7 +61,7 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testEventConstructorExceptions1()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         new Event(array(1, 2), 'val_b',
             array(
                 new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
@@ -71,7 +72,8 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testEventConstructorExceptions2()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
+
         new Event("key_a", array(1, 2),
             array(
                 new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
@@ -82,31 +84,31 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testEventConstructorExceptions3()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         new Event("key_a", 'val_b', array(1, 2));
     }
 
     public function testGetEventException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->report->getEvent(array(1, 2, 3));
     }
 
     public function testHasEventException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->report->hasEvent(array(1, 2, 3));
     }
 
     public function testInitConfigWrongPathException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         Init::init('IDS/Config/Config.ini.wrong');
     }
 
     public function testWrongXmlFilterPathException()
     {
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->init->config['General']['filter_type'] = 'xml';
         $this->init->config['General']['filter_path'] = 'IDS/wrong_path';
         new Monitor($this->init);
