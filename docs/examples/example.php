@@ -16,12 +16,10 @@
  * GNU General Public License for more details.
  */
 
-require_once __DIR__.'/../../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use IDS\Init;
 use IDS\Monitor;
-use IDS\Log\CompositeLogger;
-use IDS\Log\FileLogger;
 
 if (!session_id()) {
     session_start();
@@ -83,32 +81,10 @@ try {
     if (!$result->isEmpty()) {
         echo $result;
 
-        /*
-        * The following steps are optional to log the results
-        */
-        $compositeLog = new CompositeLogger();
-
-        $compositeLog->addLogger(FileLogger::getInstance($init));
-
-
-        /*
-        * Note that you might also use different logging facilities
-        * such as IDS\Log\EmailLogger or IDS\Log\DatabaseLogger
-        *
-        * Just uncomment the following lines to test the wrappers
-        */
-        /*
-        *
-        $compositeLog->addLogger(
-            IDS\Log\EmailLogger::getInstance($init),
-            IDS\Log\DatabaseLogger::getInstance($init)
-        );
-        */
-        $compositeLog->execute($result);
     } else {
         echo '<a href="?test=%22><script>eval(window.name)</script>">No attack detected - click for an example attack</a>';
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     /*
     * sth went terribly wrong - maybe the
     * filter rules weren't found?
