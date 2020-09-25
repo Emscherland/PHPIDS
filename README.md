@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PHPIDS/PHPIDS.png)](https://travis-ci.org/PHPIDS/PHPIDS)
+[![Build Status](https://travis-ci.org/Emscherland/PHPIDS.png)](https://travis-ci.org/Emscherland/PHPIDS)
 
 # PHPIDS
 
@@ -17,14 +17,14 @@ logfiles or searching hacker forums for your domain. Last but not least it’s l
 ## Contributions
 
 If you would like to contribute, please open a pull request. If you need something to do, have a look at our
-[open issues](https://github.com/PHPIDS/PHPIDS/issues).
+[open issues](https://github.com/Emscherland/PHPIDS/issues).
 
 
 ## Credits
 
 The project was started by Christian Matthies <ch0012@gmail.com> and Mario Heiderich <mario.heiderich@gmail.com>.
-Mario spend a lot of time maintaining PHPIDS mostly on his own. Huge props for that. Currently Lars Strojny <lars@strojny.net>
-merges pull requests.
+Mario spend a lot of time maintaining PHPIDS mostly on his own. Huge props for that. Lars Strojny <lars@strojny.net>
+merged pull requests of the original package.
 
 ### An incomplete list of contributors:
 
