@@ -2,7 +2,7 @@ language: php
 
 php:
   - 7.4
-  - 8.0
+  - nightly
 
 env:
     - IDS_FILTER_TYPE=json IDS_FILTER_SET=lib/IDS/default_filter.json
