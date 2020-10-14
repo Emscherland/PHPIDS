@@ -3,8 +3,6 @@
          convertErrorsToExceptions="true"
          convertWarningsToExceptions="true"
          convertNoticesToExceptions="true"
-         mapTestClassNameToCoveredClassName="true"
-         strict="true"
          verbose="true"
          colors="true"
          timeoutForLargeTests="100"
@@ -16,21 +14,6 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./lib</directory>
-        </whitelist>
-    </filter>
-
-    <logging>
-        <log type="coverage-html"
-            target="docs/coverage/"
-            charset="UTF-8"
-            yui="true"
-            highlight="true"
-            lowUpperBound="60"
-            highLowerBound="80" />
-    </logging>
     <php>
         <var name="IDS_TEMP_DIR" value="/tmp"/>
         <var name="IDS_CONFIG" value="lib/IDS/Config/Config.ini.php"/>
