@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +16,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.1.6+
  *
  * @category Security
  * @package  PHPIDS
@@ -35,7 +31,6 @@ namespace IDS;
 use ArrayIterator;
 use Countable;
 use InvalidArgumentException;
-use Iterator;
 use IteratorAggregate;
 
 /**
@@ -63,7 +58,7 @@ class Report implements Countable, IteratorAggregate
      *
      * @var Event[]|array
      */
-    protected $events = array();
+    protected array $events = array();
 
     /**
      * List of affected tags
@@ -73,7 +68,7 @@ class Report implements Countable, IteratorAggregate
      *
      * @var string[]|array
      */
-    protected $tags = array();
+    protected array $tags = array();
 
     /**
      * Impact level
@@ -83,7 +78,7 @@ class Report implements Countable, IteratorAggregate
      *
      * @var integer
      */
-    protected $impact = 0;
+    protected int $impact = 0;
 
     /**
      * Centrifuge data
@@ -93,18 +88,16 @@ class Report implements Countable, IteratorAggregate
      *
      * @var array
      */
-    protected $centrifuge = array();
+    protected array $centrifuge = array();
 
     /**
      * Constructor
      *
      * @param array $events the events the report should include
-     *
-     * @return Report
      */
-    public function __construct(array $events = null)
+    public function __construct(array $events = array())
     {
-        foreach ((array)$events as $event) {
+        foreach ($events as $event) {
             $this->addEvent($event);
         }
     }
@@ -169,10 +162,8 @@ class Report implements Countable, IteratorAggregate
      *
      * Each stored IDS_Event object and its IDS_Filter sub-object are called
      * to calculate the overall impact level of this request
-     *
-     * @return integer
      */
-    public function getImpact()
+    public function getImpact(): int
     {
         if (!$this->impact) {
             $this->impact = 0;
@@ -188,11 +179,10 @@ class Report implements Countable, IteratorAggregate
      * Checks if a specific event with given name exists
      *
      * @param string|integer $name the event name
-     *
-     * @return boolean
+
      * @throws InvalidArgumentException if argument is illegal
      */
-    public function hasEvent($name)
+    public function hasEvent($name): bool
     {
         if (!is_scalar($name)) {
             throw new InvalidArgumentException('Invalid argument given');
@@ -217,10 +207,8 @@ class Report implements Countable, IteratorAggregate
      * In order to provide the possibility to directly iterate over the
      * IDS_Event object the IteratorAggregate is implemented. One can easily
      * use foreach() to iterate through all stored IDS_Event objects.
-     *
-     * @return Iterator the event collection
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->events);
     }
@@ -230,7 +218,7 @@ class Report implements Countable, IteratorAggregate
      *
      * @return boolean
      */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return empty($this->events);
     }
@@ -252,7 +240,7 @@ class Report implements Countable, IteratorAggregate
      *
      * @return array
      */
-    public function getCentrifuge()
+    public function getCentrifuge(): array
     {
         return $this->centrifuge;
     }
@@ -275,10 +263,8 @@ class Report implements Countable, IteratorAggregate
 
     /**
      * Directly outputs all available information
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $output = '';
         if (!$this->isEmpty()) {

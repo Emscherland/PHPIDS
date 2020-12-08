@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,26 +60,6 @@ class FilterTest extends TestCase
         $this->assertTrue($filter->match("TE1ST\n"));
     }
 
-    public function testInvalidArgumentOnMatch()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $filter = new Filter(1, '^test$', 'My description', array('foo', 'bar'), 10);
-        $filter->match(1);
-    }
-
-    public function testInvalidArgumentInFilterInstanciation1()
-    {
-        $this->markTestSkipped('The values are not validated properly on instanciation');
-        $this->expectException(InvalidArgumentException::class);
-        new Filter(1, '^test$', 'my desc', array('foo'), 'test');
-    }
-
-    public function testInvalidArgumentInFilterInstanciation2()
-    {
-        $this->markTestSkipped('The values are not validated properly on instanciation');
-        $this->expectException(InvalidArgumentException::class);
-        new Filter(1, 1, 'my desc', array("foo"), 'bla');
-    }
 
     public function testFilterSetFilterSet()
     {

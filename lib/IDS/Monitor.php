@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +16,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.1.6+
  *
  * @category Security
  * @package  PHPIDS
@@ -56,14 +52,6 @@ use InvalidArgumentException;
  */
 class Monitor
 {
-    /**
-     * Tags to define what to search for
-     *
-     * Accepted values are xss, csrf, sqli, dt, id, lfi, rfe, spam, dos
-     *
-     * @var array
-     */
-    private $tags = null;
 
     /**
      * Container for filter rules
@@ -72,7 +60,7 @@ class Monitor
      *
      * @var Storage
      */
-    private $storage = null;
+    private ?Storage $storage = null;
 
     /**
      * Scan keys switch
@@ -82,7 +70,7 @@ class Monitor
      *
      * @var boolean
      */
-    public $scanKeys = false;
+    public bool $scanKeys = false;
 
     /**
      * Exception container
@@ -140,15 +128,11 @@ class Monitor
      * Constructor
      *
      * @param Init $init instance of IDS_Init
-     * @param array|null $tags list of tags to which filters should be applied
-     * @return Monitor
-     * @throws Exception
-     * @throws InvalidArgumentException When PHP version is less than what the library supports
+     * @param array $tags list of tags to which filters should be applied
      */
-    public function __construct(Init $init, array $tags = null)
+    public function __construct(Init $init, private array $tags = array())
     {
         $this->storage = new Storage($init);
-        $this->tags = $tags;
         $this->scanKeys = $init->config['General']['scan_keys'];
         $this->exceptions = isset($init->config['General']['exceptions']) ? $init->config['General']['exceptions'] : array();
         $this->html = isset($init->config['General']['html']) ? $init->config['General']['html'] : array();
@@ -170,8 +154,9 @@ class Monitor
      *
      * @param array $request
      * @return Report
+     * @throws Exception
      */
-    public function run(array $request)
+    public function run(array $request): Report
     {
         $report = new Report;
         foreach ($request as $key => $value) {
@@ -188,8 +173,9 @@ class Monitor
      * @param array|string $value the former array value
      * @param Report $report
      * @return Report
+     * @throws Exception
      */
-    private function iterate($key, $value, Report $report)
+    private function iterate(string $key, array|string $value, Report $report): Report
     {
         if (is_array($value)) {
             foreach ($value as $subKey => $subValue) {
@@ -210,8 +196,9 @@ class Monitor
      * @param mixed $value the value to scan
      *
      * @return Filter[] array of filter(s) that matched the value
+     * @throws Exception
      */
-    private function detect($key, $value)
+    private function detect(string $key, mixed $value): array
     {
         // define the pre-filter
         $preFilter = '([^\w\s/@!?\.]+|(?:\./)|(?:@@\w+)|(?:\+ADw)|(?:union\s+select))i';
@@ -279,12 +266,10 @@ class Monitor
      *
      * @param mixed $key
      * @param mixed $value
-     * @return array tuple [key,value]
+     * @return array
      * @throws Exception
-     *
-     * @since  0.5
      */
-    private function purifyValues($key, $value)
+    private function purifyValues(mixed $key, mixed $value): array
     {
         /*
          * Perform a pre-check if string is valid for purification
@@ -294,7 +279,6 @@ class Monitor
                 throw new Exception($this->HTMLPurifierCache . ' must be writeable');
             }
 
-            /** @var $config HTMLPurifier_Config */
             $config = HTMLPurifier_Config::createDefault();
             $config->set('Attr.EnableID', true);
             $config->set('Cache.SerializerPath', $this->HTMLPurifierCache);
@@ -329,7 +313,7 @@ class Monitor
      * @since  0.6
      *
      */
-    private function purifierPreCheck($key = '', $value = '')
+    private function purifierPreCheck($key = '', $value = ''): bool
     {
         /*
          * Remove control chars before pre-check
@@ -348,11 +332,10 @@ class Monitor
      * @param string $original the original markup
      * @param string $purified the purified markup
      * @param string $plain the string without html
-     * @return string the difference between the strings
+     * @return string|null the difference between the strings
      * @since 0.5
-     *
      */
-    private function diff($original, $purified, $plain)
+    private function diff(string $original, string $purified, string $plain): ?string
     {
         /*
          * deal with over-sensitive alt-attribute addition of the purifier
@@ -415,7 +398,7 @@ class Monitor
      * @since  0.5.3
      *
      */
-    private function jsonDecodeValues($key, $value)
+    private function jsonDecodeValues(string $key, string $value): array
     {
         $decodedKey = json_decode($key);
         $decodedValue = json_decode($value);
@@ -499,7 +482,7 @@ class Monitor
      * @since 0.5
      *
      */
-    public function addHtml($value)
+    public function addHtml(string $value)
     {
         $this->html[] = $value;
     }
@@ -511,7 +494,7 @@ class Monitor
      * @since 0.5
      *
      */
-    public function getHtml()
+    public function getHtml(): array
     {
         return $this->html;
     }
@@ -522,11 +505,10 @@ class Monitor
      * @param string[]|string $json the fields containing json
      * @return void
      * @since 0.5.3
-     *
      */
-    public function setJson($json)
+    public function setJson(array $json)
     {
-        $this->json = (array)$json;
+        $this->json = $json;
     }
 
     /**
@@ -535,21 +517,18 @@ class Monitor
      * @param string $value the value containing JSON data
      * @return void
      * @since  0.5.3
-     *
      */
-    public function addJson($value)
+    public function addJson(string $value)
     {
         $this->json[] = $value;
     }
 
     /**
      * Returns json array
-     *
-     * @return array the fields that contain json
      * @since 0.5.3
      *
      */
-    public function getJson()
+    public function getJson(): array
     {
         return $this->json;
     }
@@ -557,9 +536,8 @@ class Monitor
     /**
      * Returns storage container
      *
-     * @return array
      */
-    public function getStorage()
+    public function getStorage(): Storage
     {
         return $this->storage;
     }

@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
  *
- * PHP version 5.1.6+
- *
  * @category Security
  * @package  PHPIDS
  * @author   Mario Heiderich <mario.heiderich@gmail.com>
@@ -31,6 +27,8 @@
  */
 
 namespace IDS\Caching;
+
+use IDS\Init;
 
 /**
  * Caching factory
@@ -53,14 +51,15 @@ class CacheFactory
     /**
      * Factory method
      *
-     * @param object $init the IDS_Init object
+     * @param Init $init the IDS_Init object
      * @param string $type the caching type
      *
-     * @return object the caching facility
+     * @return CacheInterface|null the caching facility
      */
-    public static function factory($init, $type): ?CacheInterface
+    public static function factory(Init $init, string $type): ?CacheInterface
     {
         $object = null;
+
         $wrapper = preg_replace(
             '/\W+/m',
             null,

@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 class EventTest extends TestCase
 {
-    /**
-     * @var Event
-     */
-    protected $event;
+    protected Event $event;
 
     public function setUp():void
     {
@@ -63,14 +59,12 @@ class EventTest extends TestCase
 
     public function testCount()
     {
-        $this->assertEquals(2, count($this->event));
+        $this->assertCount(2, $this->event);
     }
 
     public function testCopy()
     {
-        $filters = $this->event->getFilters();
-        $filter[] = "foo";
-        $this->assertEquals(2, count($this->event));
+        $this->assertCount(2, $this->event);
     }
 
     public function testIteratorAggregate()

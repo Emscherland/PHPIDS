@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,15 +25,8 @@ use PHPUnit\Framework\TestCase;
 
 class FilterSetTest extends TestCase
 {
-    /**
-     * @var array
-     */
-    protected $jsonFilter;
-
-    /**
-     * @var array
-     */
-    protected $xmlFilter;
+    protected array $jsonFilter;
+    protected array $xmlFilter;
 
     public function setUp():void
     {
@@ -42,7 +34,7 @@ class FilterSetTest extends TestCase
         $this->xmlFilter = $this->getFilterSet('xml');
     }
 
-    private function getFilterSet($type)
+    private function getFilterSet($type): array
     {
         $init = Init::init(IDS_CONFIG);
         $init->config['General']['filter_type'] = strtolower($type);

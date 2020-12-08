@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +16,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.1.6+
  *
  * @category Security
  * @package  PHPIDS
@@ -35,7 +31,6 @@ namespace IDS;
 use ArrayIterator;
 use Countable;
 use InvalidArgumentException;
-use Iterator;
 use IteratorAggregate;
 
 /**
@@ -58,44 +53,24 @@ use IteratorAggregate;
  */
 class Event implements Countable, IteratorAggregate
 {
-    /**
-     * Event name
-     *
-     * @var string
-     */
-    protected $name = null;
-
-    /**
-     * Value of the event
-     *
-     * @var mixed
-     */
-    protected $value = null;
 
     /**
      * List of filter objects
-     *
      * Filter objects in this array are those that matched the events value
-     *
-     * @var Filter[]|array
      */
-    protected $filters = array();
+    protected array $filters = array();
 
     /**
      * Calculated impact
      *
      * Total impact of the event
-     *
-     * @var integer
      */
-    protected $impact = 0;
+    protected int $impact = 0;
 
     /**
-     * Affecte tags
-     *
-     * @var string[]|array
+     * Affected tags
      */
-    protected $tags = array();
+    protected array $tags = array();
 
     /**
      * Constructor
@@ -105,26 +80,15 @@ class Event implements Countable, IteratorAggregate
      * @param string $name the event name
      * @param mixed $value the event value
      * @param Filter[]|array $filters the corresponding filters
-     *
-     * @return Event
-     * @throws InvalidArgumentException
      */
-    public function __construct($name, $value, array $filters)
+    public function __construct(protected string $name, protected mixed $value, array $filters)
     {
-        if (!is_scalar($name)) {
-            throw new InvalidArgumentException(
-                'Expected $name to be a scalar,' . gettype($name) . ' given'
-            );
-        }
 
         if (!is_scalar($value)) {
             throw new InvalidArgumentException(
                 'Expected $value to be a scalar,' . gettype($value) . ' given'
             );
         }
-
-        $this->name = $name;
-        $this->value = $value;
 
         foreach ($filters as $filter) {
             if (!$filter instanceof Filter) {
@@ -135,6 +99,8 @@ class Event implements Countable, IteratorAggregate
 
             $this->filters[] = $filter;
         }
+
+        return $this;
     }
 
     /**
@@ -145,27 +111,23 @@ class Event implements Countable, IteratorAggregate
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * Returns event value
-     *
-     * @return mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
     /**
      * Returns calculated impact
-     *
-     * @return integer
      */
-    public function getImpact()
+    public function getImpact(): int
     {
         if (!$this->impact) {
             $this->impact = 0;
@@ -180,23 +142,23 @@ class Event implements Countable, IteratorAggregate
     /**
      * Returns affected tags
      *
-     * @return string[]|array
+     * @return array
      */
-    public function getTags()
+    public function getTags(): array
     {
         foreach ($this->getFilters() as $filter) {
             $this->tags = array_merge($this->tags, $filter->getTags());
         }
 
-        return $this->tags = array_values(array_unique($this->tags));
+        $this->tags = array_values(array_unique($this->tags));
+
+        return $this->tags;
     }
 
     /**
      * Returns list of filter objects
-     *
-     * @return Filter[]|array
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return $this->filters;
     }
@@ -206,22 +168,17 @@ class Event implements Countable, IteratorAggregate
      *
      * To implement interface Countable this returns the number of filters
      * appended.
-     *
-     * @return integer
      */
-    public function count()
+    public function count(): int
     {
         return count($this->getFilters());
     }
 
     /**
      * IteratorAggregate iterator getter
-     *
      * Returns an iterator to iterate over the appended filters.
-     *
-     * @return Iterator the filter collection
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->getFilters());
     }

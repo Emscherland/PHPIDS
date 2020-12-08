@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
  *
- * PHP version 5.1.6+
- *
  * @category Security
  * @package  PHPIDS
  * @author   Mario Heiderich <mario.heiderich@gmail.com>
@@ -32,6 +28,7 @@
 
 namespace IDS\Filter;
 
+use IDS\Caching\CacheInterface;
 use IDS\Filter;
 use IDS\Init;
 use IDS\Caching\CacheFactory;
@@ -59,31 +56,23 @@ class Storage
 {
     /**
      * Filter source file
-     *
-     * @var string
      */
-    protected $source = null;
+    protected ?string $source = null;
 
     /**
      * Holds caching settings
-     *
-     * @var array
      */
-    protected $cacheSettings = null;
+    protected ?array $cacheSettings = null;
 
     /**
      * Cache container
-     *
-     * @var object IDS_Caching wrapper
      */
-    protected $cache = null;
+    protected ?CacheInterface $cache = null;
 
     /**
      * Filter container
-     *
-     * @var array
      */
-    protected $filterSet = array();
+    protected array $filterSet = array();
 
     /**
      * Constructor
@@ -139,9 +128,8 @@ class Storage
     /**
      * Returns registered filters
      *
-     * @return array
      */
-    final public function getFilterSet()
+    final public function getFilterSet(): array
     {
         return $this->filterSet;
     }
@@ -149,11 +137,8 @@ class Storage
     /**
      * Adds a filter
      *
-     * @param object $filter IDS_Filter instance
-     *
-     * @return object $this
      */
-    final public function addFilter(Filter $filter)
+    final public function addFilter(Filter $filter): Storage
     {
         $this->filterSet[] = $filter;
 
@@ -167,7 +152,7 @@ class Storage
      */
     private function isCached()
     {
-        $filters = false;
+        $filters = null;
 
         if ($this->cacheSettings) {
             if ($this->cache) {
@@ -187,99 +172,97 @@ class Storage
      *
      * @throws InvalidArgumentException if source file doesn't exist
      * @throws RuntimeException if problems with fetching the XML data occur
-     * @return object    $this
      */
-    public function getFilterFromXML()
+    public function getFilterFromXML(): Storage
     {
-        if (extension_loaded('SimpleXML')) {
+        if (!extension_loaded('SimpleXML'))
+            throw new RuntimeException('SimpleXML is not loaded.');
 
-            /*
-             * See if filters are already available in the cache
-             */
-            $filters = $this->isCached();
+        /*
+         * See if filters are already available in the cache
+         */
+        $filters = $this->isCached();
 
-            /*
-             * If they aren't, parse the source file
-             */
-            if (!$filters) {
+        /*
+         * If they aren't, parse the source file
+         */
+        if (!$filters) {
 
-                if (!file_exists($this->source)) {
-                    throw new InvalidArgumentException(
-                        sprintf('Invalid config: %s doesn\'t exist.', $this->source)
-                    );
-                }
-
-                if (LIBXML_VERSION >= 20621) {
-                    $filters = simplexml_load_file($this->source, null, LIBXML_COMPACT);
-                } else {
-                    $filters = simplexml_load_file($this->source);
-                }
+            if (!file_exists($this->source)) {
+                throw new InvalidArgumentException(
+                    sprintf('Invalid config: %s doesn\'t exist.', $this->source)
+                );
             }
 
-            /*
-             * In case we still don't have any filters loaded and exception
-             * will be thrown
-             */
-            if (empty($filters)) {
-                throw new RuntimeException(
-                    'XML data could not be loaded.' .
-                    ' Make sure you specified the correct path.'
+            if (LIBXML_VERSION >= 20621) {
+                $filters = simplexml_load_file($this->source, null, LIBXML_COMPACT);
+            } else {
+                $filters = simplexml_load_file($this->source);
+            }
+        }
+
+        /*
+         * In case we still don't have any filters loaded and exception
+         * will be thrown
+         */
+        if (empty($filters)) {
+            throw new RuntimeException(
+                'XML data could not be loaded.' .
+                ' Make sure you specified the correct path.'
+            );
+        }
+
+        /*
+         * Now the storage will be filled with IDS_Filter objects
+         */
+        $nocache = $filters instanceof SimpleXMLElement;
+
+        if ($nocache) {
+            // build filters and cache them for re-use on next run
+            $data = array();
+            $filters = $filters->filter;
+
+            foreach ($filters as $filter) {
+                $id = (string)$filter->id;
+                $rule = (string)$filter->rule;
+                $impact = (string)$filter->impact;
+                $tags = array_values((array)$filter->tags);
+                $description = (string)$filter->description;
+
+                $this->addFilter(
+                    new Filter(
+                        $id,
+                        $rule,
+                        $description,
+                        (array)$tags[0],
+                        (int)$impact
+                    )
+                );
+
+                $data[] = array(
+                    'id' => $id,
+                    'rule' => $rule,
+                    'impact' => $impact,
+                    'tags' => $tags,
+                    'description' => $description
                 );
             }
 
             /*
-             * Now the storage will be filled with IDS_Filter objects
-             */
-            $nocache = $filters instanceof SimpleXMLElement;
-
-            if ($nocache) {
-                // build filters and cache them for re-use on next run
-                $data = array();
-                $filters = $filters->filter;
-
-                foreach ($filters as $filter) {
-                    $id = (string)$filter->id;
-                    $rule = (string)$filter->rule;
-                    $impact = (string)$filter->impact;
-                    $tags = array_values((array)$filter->tags);
-                    $description = (string)$filter->description;
-
-                    $this->addFilter(
-                        new Filter(
-                            $id,
-                            $rule,
-                            $description,
-                            (array)$tags[0],
-                            (int)$impact
-                        )
-                    );
-
-                    $data[] = array(
-                        'id' => $id,
-                        'rule' => $rule,
-                        'impact' => $impact,
-                        'tags' => $tags,
-                        'description' => $description
-                    );
-                }
-
-                /*
-                 * If caching is enabled, the fetched data will be cached
-                */
-                if ($this->cacheSettings) {
-                    $this->cache->setCache($data);
-                }
-
-            } else {
-
-                // build filters from cached content
-                $this->addFiltersFromArray($filters);
+             * If caching is enabled, the fetched data will be cached
+            */
+            if ($this->cacheSettings) {
+                $this->cache->setCache($data);
             }
 
-            return $this;
+        } else {
+
+            // build filters from cached content
+            $this->addFiltersFromArray($filters);
         }
 
-        throw new RuntimeException('SimpleXML is not loaded.');
+        return $this;
+
     }
 
     /**
@@ -292,7 +275,8 @@ class Storage
      * @return object    $this
      * @throws RuntimeException if problems with fetching the JSON data occur
      */
-    public function getFilterFromJson()
+    public
+    function getFilterFromJson()
     {
 
         if (extension_loaded('Json')) {
@@ -381,7 +365,8 @@ class Storage
      *
      * @param array $filters
      */
-    private function addFiltersFromArray(array $filters)
+    private
+    function addFiltersFromArray(array $filters)
     {
         foreach ($filters as $filter) {
 

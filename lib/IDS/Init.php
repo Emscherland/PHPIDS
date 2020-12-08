@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +16,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.1.6+
  *
  * @category Security
  * @package  PHPIDS
@@ -52,20 +48,11 @@ use InvalidArgumentException;
  */
 class Init
 {
-    /**
-     * Holds config settings
-     *
-     * @var array
-     */
-    public $config = array();
 
     /**
-     * Instance of this class depending on the supplied config file
-     *
-     * @var Init[]|array
-     * @static
+     * Instances of this class depending on the supplied config file
      */
-    private static $instances = array();
+    private static array $instances = array();
 
     /**
      * Constructor
@@ -73,12 +60,9 @@ class Init
      * Includes needed classes and parses the configuration file
      *
      * @param array $config
-     *
-     * @return Init $this
      */
-    public function __construct(array $config = array())
+    public function __construct(public array $config = array())
     {
-        $this->config = $config;
     }
 
     /**
@@ -86,11 +70,9 @@ class Init
      * is being performed to avoid compatibility problems with PHP < 5.1.6
      *
      * @param string|null $configPath the path to the config file
-     *
-     * @return self
      * @throws InvalidArgumentException
      */
-    public static function init($configPath = null)
+    public static function init(?string $configPath = null): Init
     {
         if (!$configPath) {
             return new self();
@@ -112,7 +94,7 @@ class Init
      *
      * @return string|null  the base path or null
      */
-    public function getBasePath()
+    public function getBasePath(): ?string
     {
         return (!empty($this->config['General']['base_path'])
             && !empty($this->config['General']['use_base_path']))
@@ -137,7 +119,7 @@ class Init
     }
 
     /**
-     * Merge config hashes recursivly
+     * Merge config hashes recursively
      *
      * The algorithm merges configuration arrays recursively. If an element is
      * an array in both, the values will be appended. If it is a scalar in both,
@@ -147,7 +129,7 @@ class Init
      * @param array $successor The hash which values count more when in doubt
      * @return array Merged hash
      */
-    protected function mergeConfig($current, $successor)
+    protected function mergeConfig(array $current, array $successor): array
     {
         if (is_array($current) and is_array($successor)) {
             foreach ($successor as $key => $value) {
@@ -170,7 +152,7 @@ class Init
      *
      * @return array the config array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }

@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,10 +27,7 @@ use PHPUnit\Framework\TestCase;
 
 class CachingTest extends TestCase
 {
-    /**
-     * @var Init
-     */
-    protected $init;
+    protected Init $init;
 
     public function setUp(): void
     {
@@ -42,33 +38,6 @@ class CachingTest extends TestCase
     {
         $this->init->config['Caching']['caching'] = 'none';
         $this->assertNull(CacheFactory::factory($this->init, 'storage'));
-    }
-
-    public function testCachingFile()
-    {
-        $this->init->config['Caching']['caching'] = 'file';
-        $this->init->config['Caching']['expiration_time'] = 0;
-        $this->assertTrue(CacheFactory::factory($this->init, 'storage') instanceof FileCache);
-    }
-
-    public function testCachingFileSetCache()
-    {
-        $this->init->config['Caching']['caching'] = 'file';
-        $this->init->config['Caching']['expiration_time'] = 0;
-        $this->init->config['Caching']['path'] = IDS_FILTER_CACHE_FILE;
-        $cache = CacheFactory::factory($this->init, 'storage');
-        $cache = $cache->setCache(array(1, 2, 3, 4));
-        $this->assertTrue($cache instanceof FileCache);
-    }
-
-    public function testCachingFileGetCache()
-    {
-        $this->init->config['Caching']['caching'] = 'file';
-        $this->init->config['Caching']['expiration_time'] = 0;
-        $this->init->config['Caching']['path'] = IDS_FILTER_CACHE_FILE;
-        $cache = CacheFactory::factory($this->init, 'storage');
-        $cache = $cache->setCache(array(1, 2, 3, 4));
-        $this->assertEquals($cache->getCache(), array(1, 2, 3, 4));
     }
 
     public function testCachingSession()

@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
  *
- * PHP version 5.1.6+
- *
  * @category Security
  * @package  PHPIDS
  * @author   Mario Heiderich <mario.heiderich@gmail.com>
@@ -33,6 +29,7 @@
 namespace IDS\Caching;
 
 use Exception;
+use IDS\Init;
 use Memcache;
 
 /**
@@ -53,25 +50,14 @@ use Memcache;
 class MemcachedCache implements CacheInterface
 {
     /**
-     * Caching type
-     *
-     * @var string
-     */
-    private $type = null;
-
-    /**
      * Cache configuration
-     *
-     * @var array
      */
-    private $config = null;
+    private ?array $config = null;
 
     /**
      * Flag if the filter storage has been found in memcached
-     *
-     * @var boolean
      */
-    private $isCached = false;
+    private bool $isCached = false;
 
     /**
      * Memcache object
@@ -82,25 +68,20 @@ class MemcachedCache implements CacheInterface
 
     /**
      * Holds an instance of this class
-     *
-     * @var object
      */
-    private static $cachingInstance = null;
+    private static CacheInterface|null $cachingInstance = null;
 
     /**
      * Constructor
      *
-     * @param string $type caching type
-     * @param array $init the IDS_Init object
+     * @param string|null $type caching type
+     * @param Init $init the IDS_Init object
      *
-     * @return void
+     * @throws Exception
      */
-    public function __construct($type, $init)
+    public function __construct(private ?string $type, Init $init)
     {
-
-        $this->type = $type;
         $this->config = $init->config['Caching'];
-
         $this->connect();
     }
 
@@ -108,16 +89,16 @@ class MemcachedCache implements CacheInterface
      * Returns an instance of this class
      *
      * @param string $type caching type
-     * @param object $init the IDS_Init object
+     * @param Init $init the IDS_Init object
      *
      * @return object $this
+     * @throws Exception
      */
-    public static function getInstance($type, $init)
+    public static function getInstance(string $type, Init $init): CacheInterface
     {
         if (!self::$cachingInstance) {
             self::$cachingInstance = new MemcachedCache($type, $init);
         }
-
         return self::$cachingInstance;
     }
 
@@ -126,7 +107,7 @@ class MemcachedCache implements CacheInterface
      *
      * @param array $data the caching data
      *
-     * @return object $this
+     * @return CacheInterface $this
      */
     public function setCache(array $data): CacheInterface
     {
@@ -150,7 +131,7 @@ class MemcachedCache implements CacheInterface
      *
      * @return mixed cache data or false
      */
-    public function getCache()
+    public function getCache(): mixed
     {
         $data = $this->memcache->get(
             $this->config['key_prefix'] .

@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -1,9 +1,8 @@
 <?php
 /**
  * PHPIDS
- * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2010 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +28,9 @@ use PHPUnit\Framework\TestCase;
 
 class ExceptionTest extends TestCase
 {
-    /**
-     * @var Report
-     */
-    protected $report;
 
-    /**
-     * @var Init
-     */
-    protected $init;
+    protected Report $report;
+    protected Init $init;
 
     public function setUp(): void
     {
@@ -59,17 +52,6 @@ class ExceptionTest extends TestCase
         $this->init = Init::init(IDS_CONFIG);
     }
 
-    public function testEventConstructorExceptions1()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new Event(array(1, 2), 'val_b',
-            array(
-                new Filter(1, '^test_a1$', 'desc_a1', array('tag_a1', 'tag_a2'), 1),
-                new Filter(1, '^test_a2$', 'desc_a2', array('tag_a2', 'tag_a3'), 2)
-            )
-        );
-    }
-
     public function testEventConstructorExceptions2()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -86,18 +68,6 @@ class ExceptionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         new Event("key_a", 'val_b', array(1, 2));
-    }
-
-    public function testGetEventException()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->report->getEvent(array(1, 2, 3));
-    }
-
-    public function testHasEventException()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->report->hasEvent(array(1, 2, 3));
     }
 
     public function testInitConfigWrongPathException()

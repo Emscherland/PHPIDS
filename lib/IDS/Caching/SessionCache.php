@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,8 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
  *
- * PHP version 5.1.6+
- *
  * @category Security
  * @package  PHPIDS
  * @author   Mario Heiderich <mario.heiderich@gmail.com>
@@ -31,6 +27,8 @@
  */
 
 namespace IDS\Caching;
+
+use IDS\Init;
 
 /**
  * File caching wrapper
@@ -65,10 +63,8 @@ class SessionCache implements CacheInterface
 
     /**
      * Holds an instance of this class
-     *
-     * @var object
      */
-    private static $cachingInstance = null;
+    private static CacheInterface|null $cachingInstance = null;
 
     /**
      * Constructor
@@ -88,11 +84,11 @@ class SessionCache implements CacheInterface
      * Returns an instance of this class
      *
      * @param string $type caching type
-     * @param object $init the IDS_Init object
+     * @param Init $init the IDS_Init object
      *
      * @return object $this
      */
-    public static function getInstance($type, $init)
+    public static function getInstance(string $type, Init $init)
     {
 
         if (!self::$cachingInstance) {
@@ -107,7 +103,7 @@ class SessionCache implements CacheInterface
      *
      * @param array $data the caching data
      *
-     * @return object $this
+     * @return CacheInterface $this
      */
     public function setCache(array $data): CacheInterface
     {
@@ -124,7 +120,7 @@ class SessionCache implements CacheInterface
      *
      * @return mixed cache data or false
      */
-    public function getCache()
+    public function getCache():mixed
     {
 
         if ($this->type && $_SESSION['PHPIDS'][$this->type]) {

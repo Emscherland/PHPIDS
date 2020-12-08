@@ -2,9 +2,7 @@
 /**
  * PHPIDS
  *
- * Requirements: PHP5, SimpleXML
- *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (https://phpids.org) and other Contributors
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,8 +16,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with PHPIDS. If not, see <http://www.gnu.org/licenses/>.
- *
- * PHP version 5.1.6+
  *
  * @category Security
  * @package  PHPIDS
@@ -54,34 +50,6 @@ use InvalidArgumentException;
 class Filter
 {
     /**
-     * Filter rule
-     *
-     * @var string
-     */
-    protected $rule;
-
-    /**
-     * List of tags of the filter
-     *
-     * @var string[]|array
-     */
-    protected $tags = array();
-
-    /**
-     * Filter impact level
-     *
-     * @var integer
-     */
-    protected $impact = 0;
-
-    /**
-     * Filter description
-     *
-     * @var string
-     */
-    protected $description = '';
-
-    /**
      * Constructor
      *
      * @param integer $id filter id
@@ -89,16 +57,9 @@ class Filter
      * @param string $description filter description
      * @param string[]|array $tags list of tags
      * @param integer $impact filter impact level
-     *
-     * @return Filter
      */
-    public function __construct($id, $rule, $description, array $tags, $impact)
+    public function __construct(protected int $id, protected string $rule, protected string $description, protected array $tags, protected int $impact)
     {
-        $this->id = $id;
-        $this->rule = $rule;
-        $this->tags = $tags;
-        $this->impact = $impact;
-        $this->description = $description;
     }
 
     /**
@@ -107,12 +68,10 @@ class Filter
      * Matches given string against the filter rule the specific object of this
      * class represents
      *
-     * @param string $input the string input to match
-     *
-     * @return boolean
-     * @throws InvalidArgumentException if argument is no string
+     * @param string $input
+     * @return bool
      */
-    public function match($input)
+    public function match(string $input): bool
     {
         if (!is_string($input)) {
             throw new InvalidArgumentException(
@@ -128,7 +87,7 @@ class Filter
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -138,40 +97,32 @@ class Filter
      *
      * Each filter rule is concerned with a certain kind of attack vectors.
      * This method returns those affected kinds.
-     *
-     * @return string[]|array
      */
-    public function getTags()
+    public function getTags(): array
     {
         return $this->tags;
     }
 
     /**
      * Returns filter rule
-     *
-     * @return string
      */
-    public function getRule()
+    public function getRule(): string
     {
         return $this->rule;
     }
 
     /**
      * Get filter impact level
-     *
-     * @return integer
      */
-    public function getImpact()
+    public function getImpact(): int
     {
         return $this->impact;
     }
 
     /**
      * Get filter ID
-     *
-     * @return integer
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
