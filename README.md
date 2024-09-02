@@ -1,5 +1,5 @@
 [![tests](https://github.com/Emscherland/PHPIDS/actions/workflows/tests.yml/badge.svg)](https://github.com/Emscherland/PHPIDS/actions/workflows/tests.yml)
-<a href="https://packagist.org/packages/emscherland/fpdf"><img src="https://img.shields.io/packagist/v/emscherland/phpids" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/emscherland/phpids"><img src="https://img.shields.io/packagist/v/emscherland/phpids" alt="Latest Stable Version"></a>
 <a href=""><img alt="PHP Version" src="https://img.shields.io/packagist/dependency-v/emscherland/phpids/php?server=https%3A%2F%2Fpackagist.org&label=PHP"></a>
 <a href="https://packagist.org/packages/emscherland/phpids"><img src="https://img.shields.io/packagist/l/emscherland/phpids" alt="License"></a>
 
