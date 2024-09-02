@@ -27,7 +27,7 @@
         "ext-libxml": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^11.3"
     },
     "replace": {
         "phpids/phpids": "^0.7"

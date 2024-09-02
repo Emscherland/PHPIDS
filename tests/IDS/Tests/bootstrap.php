@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../../vendor/autoload.php';
+
 
 define('IDS_TEMP_DIR', sys_get_temp_dir());
 define('IDS_FILTER_CACHE_FILE', IDS_TEMP_DIR . "/default_filter.cache");

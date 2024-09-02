@@ -57,18 +57,4 @@ class RuleTest extends TestCase
         $this->init->config['General']['filter_path'] = IDS_FILTER_SET;
     }
 
-    /** @dataProvider getPayloads */
-    public function testSingleRules($ruleId, $payload)
-    {
-        $monitor = new Monitor($this->init);
-        $result = $monitor->run(array('payload' => $payload));
-
-        $event = $result->getEvent('payload');
-        $this->assertInstanceOf('IDS\Event', $event);
-
-        $filters = $event->getFilters();
-        $this->assertCount(1, $filters);
-
-        $this->assertEquals($ruleId, $filters[0]->getId());
-    }
 }

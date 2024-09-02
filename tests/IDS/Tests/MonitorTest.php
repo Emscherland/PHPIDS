@@ -617,55 +617,6 @@ class MonitorTest extends TestCase
         $this->assertEquals(965, $result->getImpact());
     }
 
-    public function testSelfContainedXSSList()
-    {
-        $this->markTestSkipped('The values are not validated properly because the test data is wrong for use without get_magic_quotes_gpc()');
-
-        $exploits = array();
-        $exploits[] = 'a=0||\'ev\'+\'al\',b=0||1[a](\'loca\'+\'tion.hash\'),c=0||\'sub\'+\'str\',1[a](b[c](1));';
-        $exploits[] = 'eval.call(this,unescape.call(this,location))';
-        $exploits[] = 'd=0||\'une\'+\'scape\'||0;a=0||\'ev\'+\'al\'||0;b=0||\'locatio\';b+=0||\'n\'||0;c=b[a];d=c(d);c(d(c(b)))';
-        $exploits[] = '_=eval,__=unescape,___=document.URL,_(__(___))';
-        $exploits[] = '$=document,$=$.URL,$$=unescape,$$$=eval,$$$($$($))';
-        $exploits[] = '$_=document,$__=$_.URL,$___=unescape,$_=$_.body,$_.innerHTML = $___(http=$__)';
-        $exploits[] = 'ev\al.call(this,unescape.call(this,location))';
-        $exploits[] = 'setTimeout//
-                        (name//
-                        ,0)//';
-        $exploits[] = 'a=/ev/
-                        .source
-                        a+=/al/
-                        .source,a = a[a]
-                        a(name)';
-        $exploits[] = 'a=eval,b=(name);a(b)';
-        $exploits[] = 'a=eval,b= [ referrer ] ;a(b)';
-        $exploits[] = "URL = ! isNaN(1) ? 'javascriptz:zalertz(1)z' [/replace/ [ 'source' ] ]
-                        (/z/g, [] ) : 0";
-        $exploits[] = "if(0) {} else eval(new Array + ('eva') + new Array + ('l(n') + new Array + ('ame) + new Array') + new Array)
-                        'foo bar foo bar foo'";
-        $exploits[] = "switch ('foo bar foo bar foo bar') {case eval(new Array + ('eva') + new Array + ('l(n') + new Array + ('ame) + new Array') + new Array):}";
-        $exploits[] = "xxx='javascr',xxx+=('ipt:eva'),xxx+=('l(n'),xxx+=('ame),y')
-                        Cen:tri:fug:eBy:pas:sTe:xt:do location=(xxx)
-                        while(0)
-                        ";
-        $exploits[] = '-parent(1)';
-        $exploits[] = "//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf//asdf@asdf.asdf
-                        (new Option)['innerHTML']=opener.name";
-        $exploits[] = '+a
-                        >>setTimeout(a(1).a+a(1).b+a(1).c,1000);
-                        \'1\';"1"="1";a="1\"\n<a name=a a=con b=fi c=rm(120) >1<<1\\\'1\'1\"1";';
-        $exploits[] = '+a
-                        >>showHelp(a(0).a+a(0).nodeName+a(0).b+a(0).c+a(0).nodeName.toLowerCase()+a(0).d+a(0).e);
-                        \'1\';"1"="1";a="1\"\n<t id=a a=javascrip b=:confi c=rm(documen d=.coo e=kie) >1<<1\\\'1\'1\"1";';
-
-        $this->_testForPlainEvent($exploits);
-
-        $test = new Monitor(
-            $this->init
-        );
-        $result = $test->run($exploits);
-        $this->assertEquals(578, $result->getImpact());
-    }
 
     public function testSQLIList()
     {
@@ -726,68 +677,6 @@ class MonitorTest extends TestCase
         $this->assertEquals(535, $result->getImpact());
     }
 
-    public function testSQLIList2()
-    {
-        $this->markTestSkipped('The values are not validated properly because the test data is wrong for use without get_magic_quotes_gpc()');
-
-        $exploits = array();
-        $exploits[] = 'asd"or-1="-1';
-        $exploits[] = 'asd"or!1="!1';
-        $exploits[] = 'asd"or!(1)="1';
-        $exploits[] = 'asd"or@1="@1';
-        $exploits[] = 'asd"or-1 XOR"0';
-        $exploits[] = 'asd" or ascii(1)="49';
-        $exploits[] = 'asd" or md5(1)^"1';
-        $exploits[] = 'asd" or table.column^"1';
-        $exploits[] = 'asd" or @@version^"0';
-        $exploits[] = 'asd" or @@global.hot_cache.key_buffer_size^"1';
-        $exploits[] = 'asd" or!(selec79t name from users limit 1)="1';
-        $exploits[] = '1"OR!"a';
-        $exploits[] = '1"OR!"0';
-        $exploits[] = '1"OR-"1';
-        $exploits[] = '1"OR@"1" IS NULL #1 ! (with unfiltered comment by tx ;)';
-        $exploits[] = '1"OR!(false) #1 !';
-        $exploits[] = '1"OR-(true) #a !';
-        $exploits[] = '1" INTO OUTFILE "C:/webserver/www/readme.php';
-        $exploits[] = "asd' or md5(5)^'1 ";
-        $exploits[] = "asd' or column^'-1 ";
-        $exploits[] = "asd' or true -- a";
-        $exploits[] = '\"asd" or 1="1';
-        $exploits[] = "a 1' or if(-1=-1,true,false)#!";
-        $exploits[] = "aa\\\\\"aaa' or '1";
-        $exploits[] = "' or id= 1 having 1 #1 !";
-        $exploits[] = "' or id= 2-1 having 1 #1 !";
-        $exploits[] = "aa'or null is null #(";
-        $exploits[] = "aa'or current_user!=' 1";
-        $exploits[] = "aa'or BINARY 1= '1";
-        $exploits[] = "aa'or LOCALTIME!='0";
-        $exploits[] = "aa'like-'aa";
-        $exploits[] = "aa'is\N|!'";
-        $exploits[] = "'is\N-!'";
-        $exploits[] = "asd'|column&&'1";
-        $exploits[] = "asd'|column!='";
-        $exploits[] = "aa'or column=column -- #aa";
-        $exploits[] = "aa'or column*column!='0";
-        $exploits[] = "aa'or column like column -- #a";
-        $exploits[] = "0'*column is \N - '1";
-        $exploits[] = "1'*column is \N or '1";
-        $exploits[] = "1'*@a is \N - '";
-        $exploits[] = "1'*@a is \N or '1";
-        $exploits[] = "1' -1 or+1= '+1 ";
-        $exploits[] = "1' -1 - column or '1 ";
-        $exploits[] = "1' -1 or '1";
-        $exploits[] = ' (1)or(1)=(1) ';
-        $exploits[] = "fo\"o'or'1";
-
-        $this->_testForPlainEvent($exploits);
-
-        $test = new Monitor(
-            $this->init
-        );
-        $result = $test->run($exploits);
-        $this->assertEquals(691, $result->getImpact());
-    }
-
     public function testSQLIList3()
     {
         $exploits = array();
@@ -834,69 +723,6 @@ class MonitorTest extends TestCase
         );
         $result = $test->run($exploits);
         $this->assertEquals(689, $result->getImpact());
-    }
-
-    public function testSQLIList4()
-    {
-        $this->markTestSkipped('The values are not validated properly because the test data is wrong for use without get_magic_quotes_gpc()');
-
-        $exploits = array();
-
-        $exploits[] = "aa'in (0)#(";
-        $exploits[] = "aa'!=ascii(1)#(";
-        $exploits[] = "' or SOUNDEX (1) != '0";
-        $exploits[] = "aa'RLIKE BINARY 0#(";
-        $exploits[] = "aa'or column!='1";
-        $exploits[] = "aa'or column DIV 0 =0 #";
-        $exploits[] = "aa'or column+(1)='1";
-        $exploits[] = "aa'or 0!='0";
-        $exploits[] = "aa'LIKE'0";
-        $exploits[] = "aa'or id ='\\'";
-        $exploits[] = "1';declare @# int;shutdown;set @# = '1";
-        $exploits[] = "1';declare @@ int;shutdown;set @@ = '1";
-        $exploits[] = "asd' or column&&'1";
-        $exploits[] = "asd' or column= !1 and+1='1";
-        $exploits[] = "aa'!=ascii(1) or-1=-'1";
-        $exploits[] = "a'IS NOT NULL or+1=+'1";
-        $exploits[] = "aa'in('aa') or-1!='0";
-        $exploits[] = "aa' or column=+!1 #1";
-        $exploits[] = "aa' SOUNDS like+'1";
-        $exploits[] = "aa' REGEXP+'0";
-        $exploits[] = "aa' like+'0";
-        $exploits[] = "-1'=-'+1";
-        $exploits[] = "'=+'";
-        $exploits[] = "aa' or stringcolumn= +!1 #1 ";
-        $exploits[] = "aa' or anycolumn ^ -'1";
-        $exploits[] = "aa' or intcolumn && '1";
-        $exploits[] = "asd' or column&&'1";
-        $exploits[] = "asd' or column= !1 and+1='1";
-        $exploits[] = "aa' or column=+!1 #1";
-        $exploits[] = "aa'IS NOT NULL or+1^+'0";
-        $exploits[] = "aa'IS NOT NULL or +1-1 xor'0";
-        $exploits[] = "aa'IS NOT NULL or+2-1-1-1 !='0";
-        $exploits[] = "aa'|1+1=(2)Or(1)='1";
-        $exploits[] = "aa'|3!='4";
-        $exploits[] = "aa'|ascii(1)+1!='1";
-        $exploits[] = "aa'|LOCALTIME*0!='1 ";
-        $exploits[] = "asd' |1 != (1)#aa";
-        $exploits[] = "' is 99999 = '";
-        $exploits[] = "' is 0.00000000000 = '";
-        $exploits[] = "1'*column-0-'0";
-        $exploits[] = "1'-@a or'1";
-        $exploits[] = "a'-@a=@a or'1";
-        $exploits[] = "aa' *@var or 1 SOUNDS LIKE (1)|'1";
-        $exploits[] = "aa' *@var or 1 RLIKE (1)|'1 ";
-        $exploits[] = "a' or~column like ~1|'1";
-        $exploits[] = "'<~'";
-        $exploits[] = "a'-1.and '1";
-
-        $this->_testForPlainEvent($exploits);
-
-        $test = new Monitor(
-            $this->init
-        );
-        $result = $test->run($exploits);
-        $this->assertEquals(879, $result->getImpact());
     }
 
     public function testSQLIList5()
@@ -1182,23 +1008,6 @@ class MonitorTest extends TestCase
         $this->assertEquals(533, $result->getImpact());
     }
 
-    public function testUTF7List()
-    {
-        $exploits = array();
-        $exploits[] = '+alert(1)';
-        $exploits[] = 'ACM=1,1+eval(1+name+(+ACM-1),ACM)';
-        $exploits[] = '1+eval(1+name+(+1-1),-1)';
-        $exploits[] = 'XSS without being noticed<a/href=da&#x74&#97:text/html&#59&#x63harset=UTF-7&#44+ADwAcwBjAHIAaQBwAHQAPgBhAGwAZQByAHQAKAAxACkAPAAvAHMAYwByAGkAcAB0AD4->test';
-        $exploits[] = '+ADwAcwBjAHIAaQBwAHQAPgBhAGwAZQByAHQAKAAxACkAPAAvAHMAYwByAGkAcAB0AD4';
-
-        $this->_testForPlainEvent($exploits);
-
-        $test = new Monitor(
-            $this->init
-        );
-        $result = $test->run($exploits);
-        $this->assertEquals(99, $result->getImpact());
-    }
 
     public function testBase64CCConverter()
     {
@@ -1291,48 +1100,6 @@ class MonitorTest extends TestCase
         );
         $result = $test->run($exploits);
         $this->assertEquals(20, $result->getImpact());
-    }
-
-    public function testAllowedHTMLScanningPositive()
-    {
-        $this->markTestSkipped('The values are not validated properly because of editor auto-escape sequences');
-
-        $exploits = array();
-        $exploits['html_1'] = '<a/onmouseover=alert(document.cookie) href="http://www.google.de/">Google</a>';
-        $exploits['html_2'] = '<table width="500"><tr><th>Test</th><iframe/onload=alert(1)> </tr><tr><td>test</td></tr></table>';
-        $exploits['html_3'] = '<a style="background:url(//lo/)}lo:expression\(alert(1)));">lo</a>';
-        $exploits['html_4'] = '<div style="-moz-binding:url(http://h4k.in/mozxss.xml#xss)">hello!</div>';
-        $exploits['html_5'] = '<img src="javascript:alert(1)">';
-        $exploits['html_6'] = '<script>alert(1)</script><h1>headline</h1><p>copytext</p>';
-        $exploits['html_7'] = '<img src src src src=x onerror=alert(1)>';
-        $exploits['html_8'] = '<img src=1 onerror=alert(1) alt=1>';
-        $exploits['html_9'] = '<b "<script>alert(1)</script>">hola</b>';
-        $exploits['html_10'] = '<img src=phpids_logo.gif alt=Logo onreadystatechange=MsgBox-1 language=vbs>';
-        $exploits['html_11'] = '<img src="." =">" onerror=alert(1);//';
-        $exploits['html_12'] = '<img src="." =">" onerror=alert(222222222222222222222222222222222222222222222222222,1);//';
-        $exploits['html_13'] = '<img src="." =">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa onerror = alert(1)/&#10;/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-        $exploits['html_14'] = '<a style="background:url(http://hh*/)}lo:expression(this.lol?0:alert(this.lol=1))/*%31);">lo</a>';
-        $exploits['html_15'] = '<a style="background:url(/hyyuj)&#125lo:expression&#40alert&#40/1/&#41//)/*lo);">lo</a>';
-        $exploits['html_16'] = '<img src= # onerror = alert(1) <b>foo</b>';
-        $exploits['html_17'] = '<a style="background:url(//lo/\\)}lo:expression\000028alert\000028/1/\000029\000029/*lo);">lo</a>';
-        $exploits['html_18'] = '<?xml:namespace prefix=xss><?import namespace=xss implementation=http://ha.ckers.org/xss.htc><xss:*>lo</xss:*>';
-        $exploits['html_19'] = '<a style="background:url(//mh.mh/\)!*mh:expression\(write\(1\));">lo</a> // you discovered';
-        $exploits['html_20'] = '<a href="http://ha.ckers.org/xss.css" style="background:url(/**/javascript:document.documentElement.firstChild.lastChild.href=document.documentElement.firstChild.nextSibling.lastChild.previousSibling.previousSibling.lastChild.previousSibling.previousSibling.lastChild.lastChild.lastChild.lastChild.lastChild.href);">lo</a>';
-        $exploits['html_21'] = "<img src=http://lo.lo/lo = '> ' onerror=alert(1)//";
-        $exploits['html_22'] = '<div style="color:white;>;lo:expression\\\28\\\77rite\\\28 1\\\29\\\29;';
-        $exploits['html_23'] = '<div style="background:url(\'http://lo.lo/lo\',!/lo:expression(write(1))/*\');">lo</div>';
-
-        $this->init->config['General']['HTML_Purifier_Cache'] = IDS_TEMP_DIR;
-        $this->_testForPlainEvent($exploits);
-
-        $test = new Monitor(
-            $this->init
-        );
-        $test->setHtml(array_keys($exploits));
-        $result = $test->run($exploits);
-
-        $this->assertFalse($result->hasEvent(1));
-        $this->assertEquals(711, $result->getImpact());
     }
 
     public function testAllowedHTMLScanningNegative()
